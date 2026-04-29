@@ -10,33 +10,66 @@ from algorithms.graph_algorithms import (
 )
 
 BUILDING_LAYOUT = {
-    "TSU": (80, 280, 150, 330),
-    "SRC": (170, 220, 240, 270),
-    "KHS": (260, 260, 340, 320),
-    "PL":  (360, 320, 440, 380),
-    "CPAC":(250, 380, 360, 450),
-    "EC":  (470, 320, 540, 380),
-    "E":   (560, 280, 630, 340),
-    "CS":  (640, 280, 710, 340),
-    "H":   (500, 390, 560, 450),
-    "GH":  (520, 470, 590, 530),
-    "MH":  (350, 500, 430, 560),
-    "DBH": (260, 520, 330, 580),
-    "LH":  (440, 520, 500, 580),
-    "SGMH":(520, 550, 610, 610),
-    "RH":  (700, 180, 770, 260),
-    "TDH": (720, 280, 790, 340),
-    "SHCC":(610, 220, 680, 270),
-    "RG":  (690, 220, 730, 260),
-    "ENPS":(700, 360, 790, 430),
-    "ESPS":(700, 440, 790, 510),
-    "VA":  (70, 420, 150, 490),
-    "TH":  (20, 380, 80, 460),
-    "NPS": (120, 520, 220, 600),
-}
+    # West / Left side
+    "ASC":  (10, 360, 60, 410),
+    "TH":   (20, 420, 80, 480),
+    "TSU":  (80, 330, 160, 400),
+    "VA":   (95, 420, 170, 480),
+    "NPS":  (95, 520, 190, 590),
+    "E3":   (95, 595, 160, 640),
+    "UP":   (85, 250, 140, 300),
+    "SCPS": (145, 250, 220, 305),
+    "SRC":  (225, 250, 305, 305),
 
+    # North / Sports area
+    "TSC":  (330, 70, 390, 120),
+    "TS":   (250, 75, 320, 140),
+    "AF":   (430, 80, 500, 145),
+    "GF":   (405, 20, 480, 70),
+    "IF":   (330, 155, 400, 225),
+    "EP":   (425, 155, 495, 225),
+    "TTC":  (255, 165, 320, 230),
+    "TTF":  (255, 115, 330, 165),   # optional if used later
+    "TSF":  (505, 145, 575, 210),
+
+    # Upper center
+    "TG":   (330, 245, 425, 305),
+    "KHS":  (260, 275, 350, 335),
+    "SHCC": (505, 270, 575, 320),
+    "RG":   (590, 250, 635, 300),
+
+    # Center campus
+    "B":    (230, 345, 300, 405),
+    "PL":   (360, 365, 430, 435),
+    "ECS Lawn": (455, 330, 545, 405),
+    "EC":   (445, 430, 515, 490),
+    "CPAC": (185, 455, 310, 535),
+    "GC":   (300, 535, 360, 585),
+    "MH":   (370, 520, 470, 590),
+    "DBH":  (300, 590, 420, 640),
+    "MC":   (430, 610, 500, 645),
+
+    # East center / academic buildings
+    "E":    (575, 345, 635, 405),
+    "CS":   (640, 345, 700, 405),
+    "E1":   (590, 455, 675, 535),
+    "H":    (510, 510, 585, 570),
+    "GH":   (585, 565, 655, 625),
+    "LH":   (500, 610, 565, 650),
+    "SGMH": (650, 610, 735, 650),
+
+    # East / housing and parking
+    "RH":   (685, 170, 770, 250),
+    "TDH":  (700, 270, 785, 330),
+    "ENPS": (715, 390, 810, 460),
+    "ESPS": (715, 480, 810, 550),
+
+    # South / lower campus
+    "E2":   (215, 600, 285, 645),
+}
 class CampusNavigatorTab:
     def __init__(self, parent):
+        self.map_y_offset = 45
         self.parent = parent
         self.frame = ttk.Frame(parent)
         self.building_items = {}
@@ -90,7 +123,7 @@ class CampusNavigatorTab:
         middle_frame = tk.Frame(self.frame)
         middle_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.canvas = tk.Canvas(middle_frame, width=850, height=650, bg="white")
+        self.canvas = tk.Canvas(middle_frame, width=850, height=720, bg="white")
         self.canvas.pack(side="left", fill="both", expand=True)
 
         self.output_text = tk.Text(middle_frame, width=40, font=("Courier New", 10))
@@ -104,12 +137,15 @@ class CampusNavigatorTab:
         self.path_items.clear()
 
         self.canvas.create_text(
-            425, 20,
-            text="Simplified CSUF Campus Block Map",
+            425, 25,
+            text="CSUF Campus Block Map",
             font=("Arial", 14, "bold")
         )
 
         for building, (x1, y1, x2, y2) in BUILDING_LAYOUT.items():
+            y1 += self.map_y_offset
+            y2 += self.map_y_offset
+
             rect_id = self.canvas.create_rectangle(
                 x1, y1, x2, y2,
                 fill="#d9e8fb",
@@ -129,6 +165,9 @@ class CampusNavigatorTab:
             return None
 
         x1, y1, x2, y2 = BUILDING_LAYOUT[building]
+        y1 += self.map_y_offset
+        y2 += self.map_y_offset
+
         return (x1 + x2) / 2, (y1 + y2) / 2
 
     def clear_path_visuals(self):
