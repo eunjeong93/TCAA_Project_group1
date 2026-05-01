@@ -14,26 +14,28 @@ DEFAULT_CAPACITY = 8
 
 
 def greedy_scheduler(meetings):
-    '''Finds the most amount of tasks to fit within schedule'''
+    '''Finds the most amount of tasks to fit within schedule; Time Complexity: O(nlogn); Space Complexity: O(n)'''
     # Sort meetings by finish time
     meetings.sort(key=lambda m: m["end"]) # Ascending order by end time
 
     # Initialize result list and last finish time
-    selected = [] 
+    selected_items = [] 
+    total_priority = 0
     last_finish = float('-inf') # empty 
 
     # Scan meetings in finish-time order
     for meeting in meetings:
         if meeting["start"] >= last_finish:
-            selected.append(meeting) 
+            selected_items.append(meeting)
+            total_priority += meeting["priority"] 
             last_finish = meeting["end"] 
 
-    return selected
+    return total_priority, selected_items
 
 
 
 def knapsack(weights, values, capacity):
-    '''Finds combination of tasks that give the most value'''
+    '''Finds combination of tasks that give the most value; Time Complexity: O(n*W); Space Complexity: O(n*w)'''
     n = len (weights)
     dp = [[0] * (capacity + 1) for _ in range(n + 1)]
     
@@ -59,6 +61,18 @@ def knapsack(weights, values, capacity):
 
 
 def main():
+    print("Greedy Scheduler: ")
+    total, tasks = SAMPLE_TASKS.copy()
+
+    items = greedy_scheduler(tasks)
+    print("Maximum number of tasks:", len(items))
+    print("Total Priority: ", total)
+    print("Selected tasks:")
+    for t in items:
+        print(" - " + str(t))
+    print()
+
+
     print("Knapsack: ")
     weights = [t["duration"] for t in SAMPLE_TASKS]
     values  = [t["priority"] for t in SAMPLE_TASKS]
@@ -70,16 +84,6 @@ def main():
         print(" - " + str(SAMPLE_TASKS[i]))
     print()
 
-
-    print("Greedy Scheduler: ")
-    tasks = SAMPLE_TASKS.copy()
-
-    items = greedy_scheduler(tasks)
-    print("Maximum number of tasks:", len(items))
-    print("Selected tasks:")
-    for t in items:
-        print(" - " + str(t))
-    print()
     
     return
 
