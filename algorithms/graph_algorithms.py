@@ -198,12 +198,14 @@ CAMPUS_GRAPH = {
         "TG": 5,
         "IF": 2,
         "TS": 3,
-        "AF": 3
+        "AF": 3,
+        "TSF" : 1
     },
     "IF": {
         "TSC": 2,
         "EP": 2,
-        "TTC": 2
+        "TTC": 2,
+        "TTF" : 1
     },
     "EP": {
         "IF": 2,
@@ -220,10 +222,17 @@ CAMPUS_GRAPH = {
         "AF": 2
     },
     "TTC": {
-        "IF": 2
+        "IF": 2,
+        "TTF" : 3
     },
     "TSF": {
-        "EP": 2
+        "EP": 2,
+        "TSC" : 1,
+        "AF" : 1
+    },
+    "TTF" : {
+        "TTC" : 3,
+        "IF" : 1
     }
 }
 

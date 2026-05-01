@@ -1,7 +1,9 @@
+
 import tkinter as tk
 from tkinter import ttk
 
 from gui.campus_navigator_tab import CampusNavigatorTab
+from gui.note_search_tab import NoteSearchTab
 
 class TitanCampusApp:
     def __init__(self, root):
@@ -17,6 +19,7 @@ class TitanCampusApp:
     def create_tabs(self):
         campus_tab = CampusNavigatorTab(self.notebook)
         self.notebook.add(campus_tab.frame, text="Campus Navigator")
+        self.notebook.add(NoteSearchTab(self.notebook), text="Notes Search")
 
 
 if __name__ == "__main__":
