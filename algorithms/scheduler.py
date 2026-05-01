@@ -1,14 +1,14 @@
 SAMPLE_TASKS = [
-    {"name": "MATH170A HW", "start": 9, "end": 12, "duration": 3, "priority": 10},
-    {"name": "CPSC335 HW", "start": 10, "end": 11, "duration": 1, "priority": 4},
-    {"name": "CPSC250 HW", "start": 11, "end": 13, "duration": 2, "priority": 5},
-    {"name": "CPSC251 HW", "start": 13, "end": 15, "duration": 2, "priority": 7},
-    {"name": "CPSC315 HW", "start": 14, "end": 17, "duration": 3, "priority": 9},
-    {"name": "BIOL101 HW", "start": 15, "end": 16, "duration": 1, "priority": 3},
-    {"name": "PHYS225 HW", "start": 16, "end": 18, "duration": 2, "priority": 6},
-    {"name": "POSC100 HW", "start": 17, "end": 19, "duration": 2, "priority": 8},
-    {"name": "CHEM123 HW", "start": 18, "end": 19, "duration": 1, "priority": 2},
-    {"name": "AMST101 HW", "start": 19, "end": 21, "duration": 2, "priority": 5},
+    {"name": "Task 1", "start": 9, "end": 12, "duration": 3, "priority": 10},
+    {"name": "Task 2", "start": 10, "end": 11, "duration": 1, "priority": 4},
+    {"name": "Task 3", "start": 11, "end": 13, "duration": 2, "priority": 5},
+    {"name": "Task 4", "start": 13, "end": 15, "duration": 2, "priority": 7},
+    {"name": "Task 5", "start": 14, "end": 17, "duration": 3, "priority": 9},
+    {"name": "Task 6", "start": 15, "end": 16, "duration": 1, "priority": 3},
+    {"name": "Task 7", "start": 16, "end": 18, "duration": 2, "priority": 6},
+    {"name": "Task 8", "start": 17, "end": 19, "duration": 2, "priority": 8},
+    {"name": "Task 9", "start": 18, "end": 19, "duration": 1, "priority": 2},
+    {"name": "Task 10", "start": 19, "end": 21, "duration": 2, "priority": 5},
 ]
 DEFAULT_CAPACITY = 8
 
@@ -62,9 +62,9 @@ def knapsack(weights, values, capacity):
 
 def main():
     print("Greedy Scheduler: ")
-    total, tasks = SAMPLE_TASKS.copy()
+    tasks = SAMPLE_TASKS.copy()
 
-    items = greedy_scheduler(tasks)
+    total, items = greedy_scheduler(tasks)
     print("Maximum number of tasks:", len(items))
     print("Total Priority: ", total)
     print("Selected tasks:")

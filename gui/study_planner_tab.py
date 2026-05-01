@@ -1,14 +1,3 @@
-# TODO: 
-#   remove lines 1-9 later
-#   ability to add new tasks
-#   ability to remove tasks
-
-import sys
-from pathlib import Path
-
-# Add project root to sys.path to run this file standalone in VS Code
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -63,8 +52,33 @@ class StudyPlannerTab:
 
         tk.Button(button_frame, text="Run Greedy", width=15, command=self.run_greedy).grid(row=0, column=0, padx=5)
         tk.Button(button_frame, text="Run Knapsack", width=15, command=self.run_knapsack).grid(row=0, column=1, padx=5)
-        tk.Button(button_frame, text="Reset", width=15, command=self.run_reset).grid(row=0, column=2, padx=5)
+        tk.Button(button_frame, text="Reset Output", width=15, command=self.run_reset).grid(row=0, column=3, padx=5)
 
+
+        # Add Task Frame
+        add_frame = tk.Frame(self.frame)
+        add_frame.pack(fill="x", padx=10, pady=5)
+
+        # Store entries in dict
+        self.add_fields = {}
+
+        for label_text, key, width in [
+            ("Name:",     "name",     20),
+            ("Start:",    "start",    4),
+            ("End:",      "end",      4),
+            ("Priority:", "priority", 4),
+        ]:
+            tk.Label(add_frame, text=label_text).pack(side="left", padx=(5, 2))
+            entry = tk.Entry(add_frame, width=width)
+            entry.pack(side="left", padx=(0, 5))
+            self.add_fields[key] = entry
+
+        tk.Button(add_frame, text="Add Task", width=12,
+            command=self.run_add_task).pack(side="right", padx=10)
+        tk.Button(add_frame, text="Remove Selected", width=15, 
+            command=self.run_remove_selected).pack(side="right", padx=10)
+
+        
 
         # Body Frame
         body_frame = tk.Frame(self.frame)
@@ -131,9 +145,11 @@ class StudyPlannerTab:
     def run_greedy(self):
         self.clear_output()
         total, selected = greedy_scheduler(self.tasks.copy())
-        self.output_summary_var.set(f"Greedy: Total priority {total}, {len(selected)} Total tasks scheduled")
+        
+        self.output_summary_var.set(f"Greedy: Total priority {total}, {len(selected)} Total tasks scheduled") 
         for t in selected:
             self.add_output_row(t)
+
 
     def run_knapsack(self):
         self.clear_output()
@@ -145,24 +161,65 @@ class StudyPlannerTab:
         weights = [t["duration"] for t in self.tasks]
         values  = [t["priority"] for t in self.tasks]
         max_value, items = knapsack(weights, values, capacity)
+        
         self.output_summary_var.set(
             f"Knapsack: Total priority {max_value}, {len(items)} Total tasks scheduled (Capacity {capacity}h)"
         )
         for i in items:
             self.add_output_row(self.tasks[i])
 
+
     def run_reset(self):
         self.clear_output()
         self.output_summary_var.set("Run an algorithm to see results.")
+
+    def run_add_task(self):
+        try:
+            new_task = {
+                "name":     self.add_fields["name"].get().strip(),
+                "start":    int(self.add_fields["start"].get()),
+                "end":      int(self.add_fields["end"].get()),
+                "duration": int(int(self.add_fields["end"].get())-int(self.add_fields["start"].get())),
+                "priority": int(self.add_fields["priority"].get()),
+            }
+            if not new_task["name"]:
+                raise ValueError("Name cannot be empty.")
+            if new_task["end"] <= new_task["start"]:
+                raise ValueError("End must be after start.")
+        except ValueError as e:
+            messagebox.showerror("Invalid Input", str(e))
+            return
+
+        self.tasks.append(new_task)
+        self.refresh_input_tree()
+
+        # Clear textboxes so user can add another
+        for entry in self.add_fields.values():
+            entry.delete(0, "end")
+
+
+    def run_remove_selected(self):
+        selected_ids = self.tree.selection()
+        if not selected_ids:
+            messagebox.showwarning("No selection", "Select a task in the input table first")
+            return
+        indices = sorted([self.tree.index(rid) for rid in selected_ids], reverse=True)
+
+        for idx in indices:
+            del self.tasks[idx]
+
+        self.refresh_input_tree()
 
 
 
     # Helper methods
     def clear_output(self):
+        '''Clear ouput tree'''
         for row in self.output_tree.get_children():
             self.output_tree.delete(row)
 
     def add_output_row(self, task):
+        '''Add row in output'''
         self.output_tree.insert("", "end", values=(
             task["name"],
             f"{task['start']}:00",
@@ -183,12 +240,11 @@ class StudyPlannerTab:
             ))
     
     def refresh_input_tree(self):
-        """Update input tree"""
+        '''Update input tree'''
         for row in self.tree.get_children():
             self.tree.delete(row)
         self.populate_tree()
         self.input_summary_var.set(f"Inputs: {len(self.tasks)} tasks")
-
 
         
 
