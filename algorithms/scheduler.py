@@ -74,13 +74,14 @@ def main():
     print("Greedy Scheduler: ")
     tasks = SAMPLE_TASKS.copy()
 
-    
     items = greedy_scheduler(tasks)
     print("Maximum number of tasks:", len(items))
     print("Selected tasks:")
     for t in items:
         print(" - " + str(t))
     print()
+    
+    return
 
 if __name__ == "__main__":
     main()
