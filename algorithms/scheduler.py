@@ -1,25 +1,39 @@
 SAMPLE_TASKS = [
-    {"name": "MATH170A", "start": 9, "end": 12, "duration": 3, "priority": 10},
-    {"name": "MATH170B", "start": 10, "end": 11, "duration": 1, "priority": 4},
-    {"name": "CPSC250", "start": 11, "end": 13, "duration": 2, "priority": 5},
-    {"name": "CPSC251", "start": 13, "end": 15, "duration": 2, "priority": 7},
-    {"name": "CPSC315", "start": 14, "end": 17, "duration": 3, "priority": 9},
-    {"name": "BIOL101", "start": 15, "end": 16, "duration": 1, "priority": 3},
-    {"name": "PHYS225", "start": 16, "end": 18, "duration": 2, "priority": 6},
-    {"name": "POSC100", "start": 17, "end": 19, "duration": 2, "priority": 8},
-    {"name": "CHEM123", "start": 18, "end": 19, "duration": 1, "priority": 2},
-    {"name": "AMST101", "start": 19, "end": 21, "duration": 2, "priority": 5},
+    {"name": "MATH170A HW", "start": 9, "end": 12, "duration": 3, "priority": 10},
+    {"name": "CPSC335 HW", "start": 10, "end": 11, "duration": 1, "priority": 4},
+    {"name": "CPSC250 HW", "start": 11, "end": 13, "duration": 2, "priority": 5},
+    {"name": "CPSC251 HW", "start": 13, "end": 15, "duration": 2, "priority": 7},
+    {"name": "CPSC315 HW", "start": 14, "end": 17, "duration": 3, "priority": 9},
+    {"name": "BIOL101 HW", "start": 15, "end": 16, "duration": 1, "priority": 3},
+    {"name": "PHYS225 HW", "start": 16, "end": 18, "duration": 2, "priority": 6},
+    {"name": "POSC100 HW", "start": 17, "end": 19, "duration": 2, "priority": 8},
+    {"name": "CHEM123 HW", "start": 18, "end": 19, "duration": 1, "priority": 2},
+    {"name": "AMST101 HW", "start": 19, "end": 21, "duration": 2, "priority": 5},
 ]
 DEFAULT_CAPACITY = 8
 
 
-def greedy_scheduler():
+def greedy_scheduler(meetings):
+    '''Finds the most amount of tasks to fit within schedule'''
+    # Sort meetings by finish time
+    meetings.sort(key=lambda m: m["end"]) # Ascending order by end time
 
+    # Initialize result list and last finish time
+    selected = [] 
+    last_finish = float('-inf') # empty 
 
-    return
+    # Scan meetings in finish-time order
+    for meeting in meetings:
+        if meeting["start"] >= last_finish:
+            selected.append(meeting) 
+            last_finish = meeting["end"] 
+
+    return selected
+
 
 
 def knapsack(weights, values, capacity):
+    '''Finds combination of tasks that give the most value'''
     n = len (weights)
     dp = [[0] * (capacity + 1) for _ in range(n + 1)]
     
@@ -50,11 +64,23 @@ def main():
     values  = [t["priority"] for t in SAMPLE_TASKS]
 
     max_value, items = knapsack(weights, values, DEFAULT_CAPACITY)
-    print("Maximum Profit:", max_value)
+    print("Maximum Priority:", max_value)
     print("Items in Knapsack: ")  
     for i in items:
         print(" - " + str(SAMPLE_TASKS[i]))
-    return
+    print()
+
+
+    print("Greedy Scheduler: ")
+    tasks = SAMPLE_TASKS.copy()
+
+    
+    items = greedy_scheduler(tasks)
+    print("Maximum number of tasks:", len(items))
+    print("Selected tasks:")
+    for t in items:
+        print(" - " + str(t))
+    print()
 
 if __name__ == "__main__":
     main()
